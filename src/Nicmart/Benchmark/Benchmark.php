@@ -9,6 +9,7 @@
  */
 
 namespace Nicmart\Benchmark;
+use Jeremeamia\SuperClosure\ClosureParser;
 
 /**
  * Class Benchmark
@@ -99,6 +100,21 @@ class Benchmark
         return $parsedResults;
     }
 
+    /**
+     * @param PHPTemplate $template
+     * @return string
+     */
+    public function renderResults(PHPTemplate $template = null)
+    {
+        if (!isset($template))
+            $template = new PHPTemplate;
+
+        return $template->render(array(
+            'title' => $this->title,
+            'benchmarks' => $this->getResults()
+        ));
+    }
+
     private function getCompareWithColumns()
     {
         $funcs = $this->functions;
@@ -122,7 +138,8 @@ class Benchmark
             'title' => $this->functions[$name]['title'],
             'comparated' => $this->functions[$name]['compare'],
             'time' => $times[$name],
-            'comparisons' => array()
+            'comparisons' => array(),
+            'code' => $this->getCode($name)
         );
 
         foreach ($this->compareWith as $comparedName) {
@@ -138,18 +155,10 @@ class Benchmark
         return $parsedResult;
     }
 
-    /**
-     * @param PHPTemplate $template
-     * @return string
-     */
-    public function renderResults(PHPTemplate $template = null)
+    private function getCode($name)
     {
-        if (!isset($template))
-            $template = new PHPTemplate;
+        $parser = ClosureParser::fromClosure($this->functions[$name]['func']);
 
-        return $template->render(array(
-            'title' => $this->title,
-            'benchmarks' => $this->getResults()
-        ));
+        return $parser->getCode();
     }
 }

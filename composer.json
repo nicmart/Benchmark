@@ -10,8 +10,10 @@
             "email": "nicmartnic@gmail.com"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
-        "php": ">=5.3.3"
+        "php": ">=5.3.3",
+        "jeremeamia/SuperClosure": "~1.0"
     },
     "require-dev": {
         "satooshi/php-coveralls": "dev-master"
