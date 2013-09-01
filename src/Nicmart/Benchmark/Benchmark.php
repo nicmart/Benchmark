@@ -92,7 +92,7 @@ class Benchmark
             $parsedResult['rows']  = array();
 
             foreach ($result['times'] as $name => $time)
-                $parsedResult['rows'][] = $this->parseResult($name, $result['times']);
+                $parsedResult['rows'][] = $this->parseResult($name, $result['iterations'], $result['times']);
 
             $parsedResults[] = $parsedResult;
         }
@@ -131,13 +131,14 @@ class Benchmark
      * @param array $times
      * @return array
      */
-    private function parseResult($name, array $times)
+    private function parseResult($name, $iterations, array $times)
     {
         $parsedResult = array(
             'name' => $name,
             'title' => $this->functions[$name]['title'],
             'comparated' => $this->functions[$name]['compare'],
             'time' => $times[$name],
+            'avg' => $times[$name] / $iterations,
             'comparisons' => array(),
             'code' => $this->getCode($name)
         );

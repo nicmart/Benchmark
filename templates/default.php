@@ -36,12 +36,13 @@
     <h1><?php echo $title; ?></h1>
     <hr>
     <?php foreach ($benchmarks as $i => $benchmark): ?>
-        <span class="btn btn-xs btn-info">Benchmark <?php echo $i + 1; ?>: <b class="warning"><?php echo $benchmark['iterations']; ?></b> iterations</span>
+        <span class="btn btn-xs btn-info">Benchmark <?php echo $i + 1; ?>: <b class="warning"><?php echo number_format($benchmark['iterations']); ?></b> iterations</span>
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Function</th>
                     <th>Time</th>
+                    <th>Average</th>
                     <?php foreach ($benchmark['compareWith'] as $data): ?>
                         <th>Compare with <?php echo $data['title'] ?></th>
                     <?php endforeach; ?>
@@ -55,6 +56,7 @@
                             <?php modal($row, $benchmark['iterations']); ?>
                         </td>
                         <td><?php echo $row['time']; ?> s</td>
+                        <td><?php echo $row['avg']; ?> s</td>
                         <?php foreach($row['comparisons'] as $comparisonData): ?>
                             <td class="
                                 <?php
@@ -71,12 +73,12 @@
             <tfoot>
             </tfoot>
         </table>
-    <?php endforeach; var_dump($benchmark); ?>
+    <?php endforeach; ?>
 </div>
 <!-- Modal -->
 <script type="text/javascript">
     SyntaxHighlighter.defaults['toolbar'] = false;
-     SyntaxHighlighter.all()
+    SyntaxHighlighter.all()
 </script>
 </body>
 </html>
@@ -98,8 +100,8 @@ function modal($row, $iterations)
           </div>
             <div class="modal-footer small">
                 <ul class="list-inline" style="margin: 0; padding: 0">
-                    <li>Iterations: <b><?php echo $iterations; ?></b></li>
-                    <li>Time: <b><?php echo $row['time']; ?> s</b></li>
+                    <li>Iterations: <b><?php echo number_format($iterations); ?></b></li>
+                    <li>Average Time: <b><?php echo $row['avg']; ?> s</b></li>
                 </ul>
             </div>
         </div><!-- /.modal-content -->

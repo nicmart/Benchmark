@@ -11,23 +11,26 @@
 include '../vendor/autoload.php';
 ini_set('xdebug.var_display_max_depth', '10');
 
+function func() {}
+
+$func = 'func';
+
 $bench = new \Nicmart\Benchmark\Benchmark;
-$args = array('This Is The string To be Converted');
+$args = array_fill(0, 5, null);;
 
 $bench
     ->register('direct', 'Direct call', function() use ($args) {
-        strtoupper($args[0]);
+        func($args[0], $args[1], $args[2], $args[3], $args[4]);
     }, true)
     ->register('cuf', 'call_user_func', function() use ($args) {
-        call_user_func('strtoupper', $args[0]);
+        call_user_func('func', $args[0], $args[1], $args[2], $args[3], $args[4]);
     }, true)
     ->register('cufa', 'call_user_func_array', function() use ($args) {
-        call_user_func_array('strtoupper', $args);
+        call_user_func_array('func', $args);
     })
 ;
 
-$bench->benchmark(10);
-$bench->benchmark(100);
-$bench->benchmark(1000);
+$bench->benchmark(10000);
+$bench->benchmark(100000);
 
 echo $bench->renderResults();
