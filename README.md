@@ -1,10 +1,11 @@
-# Php library template
 # Benchmark
 [![Build Status](https://travis-ci.org/nicmart/Benchmark.png?branch=master)](https://travis-ci.org/nicmart/Benchmark)
 [![Coverage Status](https://coveralls.io/repos/nicmart/Benchmark/badge.png?branch=master)](https://coveralls.io/r/nicmart/Benchmark?branch=master)
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/nicmart/Benchmark/badges/quality-score.png?s=e06818508807c109a8c9354a73fc1a5227426c09)](https://scrutinizer-ci.com/g/nicmart/StringTemplate/)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/nicmart/Benchmark/badges/quality-score.png?s=0d038caab3aaf002666f805ff4c1b0638f377db5)](https://scrutinizer-ci.com/g/nicmart/Benchmark/)
 
-A framework for benchmarking php code..
+A framework for benchmarking php code.
+
+In early stage of development. Stay tuned.
 
 ## Install
 
