@@ -9,15 +9,20 @@
  */
 namespace Nicmart\Benchmark\Test;
 
-use Nicmart\Benchmark\FirstClass;
+use Nicmart\Benchmark\Benchmark;
 
 /**
- * Unit tests for class FirstClass
+ * Unit tests for class Benchmark
  */
-class FirstClassTest extends \PHPUnit_Framework_TestCase
+class BenchmarkTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
 
+    }
+
+    public function testBenchmark()
+    {
+        $this->assertTrue(true);
     }
 }
