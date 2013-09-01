@@ -55,8 +55,8 @@
                             <small> - <a href="#" data-toggle="modal" data-target="#modal-<?php echo $row['name']; ?>"> <i class="icon-code"></i> Code</a></small>
                             <?php modal($row, $benchmark['iterations']); ?>
                         </td>
-                        <td><?php echo $row['time']; ?> s</td>
-                        <td><?php echo $row['avg']; ?> s</td>
+                        <td><?php echo scientific($row['time']); ?> s</td>
+                        <td><?php echo scientific($row['avg']); ?> s</td>
                         <?php foreach($row['comparisons'] as $comparisonData): ?>
                             <td class="
                                 <?php
@@ -83,6 +83,16 @@
 </body>
 </html>
 <?php
+function scientific($number, $precision = 2)
+{
+    if ($number >= 0.0001)
+        return number_format($number, 4 + $precision);
+
+    $s = sprintf("%.{$precision}e", $number);
+    list($main, $exp) = explode('e', $s);
+
+    return sprintf("%s &times; 10<sup>%s</sup>", $main, $exp);
+}
 function modal($row, $iterations)
 {
 ?>
