@@ -18,8 +18,8 @@
     },
     "autoload": {
         "psr-0": {
-            "Nicmart\Benchmark": "src/",
-            "Nicmart\Benchmark\\Test": "tests"
+            "Nicmart\\Benchmark": "src/",
+            "Nicmart\\Benchmark\\Test": "tests"
         }
     }
 }
