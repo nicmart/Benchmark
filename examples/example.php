@@ -20,14 +20,14 @@ $bench
     }, true)
     ->register('cuf', 'call_user_func', function() use ($args) {
         call_user_func('strtoupper', $args[0]);
-    })
+    }, true)
     ->register('cufa', 'call_user_func_array', function() use ($args) {
         call_user_func_array('strtoupper', $args);
     })
 ;
 
+$bench->benchmark(10);
 $bench->benchmark(100);
 $bench->benchmark(1000);
-$bench->benchmark(10000);
 
-var_dump($bench->getResults());
+echo $bench->renderResults();

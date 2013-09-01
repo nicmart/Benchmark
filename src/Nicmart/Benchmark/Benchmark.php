@@ -86,14 +86,28 @@ class Benchmark
 
         foreach ($this->results as $result)
         {
-            $parsedResults['iterations']  = $result['iterations'];
-            $parsedResults['rows']  = array();
+            $parsedResult['iterations']  = $result['iterations'];
+            $parsedResult['compareWith']  = $this->getCompareWithColumns();
+            $parsedResult['rows']  = array();
 
             foreach ($result['times'] as $name => $time)
-                $parsedResults['rows'][] = $this->parseResult($name, $result['times']);
+                $parsedResult['rows'][] = $this->parseResult($name, $result['times']);
+
+            $parsedResults[] = $parsedResult;
         }
 
         return $parsedResults;
+    }
+
+    private function getCompareWithColumns()
+    {
+        $funcs = $this->functions;
+        return array_map(function($name) use ($funcs) {
+            return array(
+                'name' => $name,
+                'title' => $funcs[$name]['title']
+            );
+        }, $this->compareWith);
     }
 
     /**
@@ -114,13 +128,28 @@ class Benchmark
         foreach ($this->compareWith as $comparedName) {
             $ratio = $times[$name] / $times[$comparedName];
             $inverse = $times[$comparedName] / $times[$name];
-            $parsedResult[$name]['comparisons'][$comparedName] = array(
+            $parsedResult['comparisons'][$comparedName] = array(
                 'ratio' => $ratio,
                 'inversedRatio' => $inverse,
-                'percentIncrease' => number_format(($ratio - 1) * 100, 2),
+                'percentIncrease' => ($ratio - 1) * 100,
             );
         }
 
         return $parsedResult;
+    }
+
+    /**
+     * @param PHPTemplate $template
+     * @return string
+     */
+    public function renderResults(PHPTemplate $template = null)
+    {
+        if (!isset($template))
+            $template = new PHPTemplate;
+
+        return $template->render(array(
+            'title' => $this->title,
+            'benchmarks' => $this->getResults()
+        ));
     }
 }
