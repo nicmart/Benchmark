@@ -52,7 +52,7 @@
                     <tr>
                         <td><b><?php echo $row['title']; ?></b>
                             <small> - <a href="#" data-toggle="modal" data-target="#modal-<?php echo $row['name']; ?>"> <i class="icon-code"></i> Code</a></small>
-                            <?php modal($row); ?>
+                            <?php modal($row, $benchmark['iterations']); ?>
                         </td>
                         <td><?php echo $row['time']; ?> s</td>
                         <?php foreach($row['comparisons'] as $comparisonData): ?>
@@ -81,7 +81,7 @@
 </body>
 </html>
 <?php
-function modal($row)
+function modal($row, $iterations)
 {
 ?>
     <div class="modal fade" id="modal-<?php echo $row['name']; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -96,6 +96,12 @@ function modal($row)
 <?php echo $row['code']; ?>
 </pre>
           </div>
+            <div class="modal-footer small">
+                <ul class="list-inline" style="margin: 0; padding: 0">
+                    <li>Iterations: <b><?php echo $iterations; ?></b></li>
+                    <li>Time: <b><?php echo $row['time']; ?> s</b></li>
+                </ul>
+            </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
