@@ -12,7 +12,7 @@
 
     <script src="//code.jquery.com/jquery.js"></script>
     <!-- Latest compiled and minified JavaScript -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 
     <link href="http://alexgorbatchev.com/pub/sh/current/styles/shThemeDefault.css" rel="stylesheet" type="text/css" />
     <script src="http://alexgorbatchev.com/pub/sh/current/scripts/shCore.js" type="text/javascript"></script>
@@ -28,6 +28,12 @@
         }
         .syntaxhighlighter .gutter .line {
             border: none !important;
+        }
+        .icon-question-sign {
+            color: #ddd;
+        }
+        div[class="tooltip-inner"] {
+            max-width: 600px !important;
         }
     </style>
 </head>
@@ -58,11 +64,18 @@
                 <?php foreach($set->benchmarks as $name => $benchmark): ?>
                     <tr>
                         <td><b><?php echo $group->funcTitles[$benchmark->name]; ?></b>
+                            <?php if(isset($group->iterationsCorrections[$name]) && $group->iterationsCorrections[$name] != 1):?>
+                                <sup><a href="#" data-toggle="tooltip" title="Iteration correction exponent"><?php echo $group->iterationsCorrections[$name]; ?></a></sup>
+                            <?php endif; ?>
                             <small> - <a href="#" data-toggle="modal" data-target="#modal-<?php echo spl_object_hash($benchmark); ?>"> <i class="icon-code"></i> Code</a></small>
                             <?php modal($benchmark); ?>
                         </td>
                         <td>
                             <?php echo $benchmark->getIterations(); ?>
+                            <?php if(isset($group->iterationsCorrections[$name]) && $group->iterationsCorrections[$name] != 1):?>
+                                <i class="icon-question-sign" data-toggle="tooltip" data-placement="right"
+                                    title="Actual iterations = iterations / (input size)^(correctionExp - 1)"></i>
+                            <?php endif; ?>
                         </td>
                         <td><?php echo scientific($benchmark->time); ?> s</td>
                         <td><?php echo scientific($benchmark->getAverage()); ?> s</td>
@@ -98,7 +111,9 @@
 <!-- Modal -->
 <script type="text/javascript">
     SyntaxHighlighter.defaults['toolbar'] = false;
-    SyntaxHighlighter.all()
+    SyntaxHighlighter.all();
+
+    $('[data-toggle="tooltip"]').tooltip();
 </script>
 </body>
 </html>
