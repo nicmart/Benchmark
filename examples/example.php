@@ -30,7 +30,10 @@ $bench
     })
 ;
 
-$bench->benchmark(100);
+$bench->benchmark(100, 1);
+$bench->benchmark(100, 2);
+$bench->benchmark(100, 4);
+$bench->benchmark(100, 8);
 $bench->benchmark(1000);
 
-echo $bench->renderResults();
+var_dump($bench->getResults());

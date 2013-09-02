@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?php echo $title; ?></title>
+    <title><?php echo 'Benchmark Suite'; ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <!-- Latest compiled and minified CSS -->
@@ -33,38 +33,43 @@
 </head>
 <body>
 <div class="container theme-showcase">
-    <h1><?php echo $title; ?></h1>
+<?php foreach ($groups as $groupIndex => $group): ?>
+
+    <h1><?php echo $group->title; ?></h1>
     <hr>
-    <?php foreach ($benchmarks as $i => $benchmark): ?>
-        <span class="btn btn-xs btn-info">Benchmark <?php echo $i + 1; ?>: <b class="warning"><?php echo number_format($benchmark['iterations']); ?></b> iterations</span>
+    <?php foreach ($group->sets as $setIndex => $set): ?>
+        <span class="btn btn-xs btn-info">
+            Benchmark <?php echo $setIndex + 1; ?>: <b><?php echo number_format($set->iterations); ?></b> iterations,
+                <?php if ($set->inputSize): ?>size: <?php echo number_format($set->inputSize); ?><?php endif; ?>
+        </span>
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Function</th>
                     <th>Time</th>
                     <th>Average</th>
-                    <?php foreach ($benchmark['compareWith'] as $data): ?>
-                        <th>Compare with <?php echo $data['title'] ?></th>
+                    <?php foreach ($group->compareWith as $name): ?>
+                        <th>Compare with <?php echo $group->funcTitles[$name]; ?></th>
                     <?php endforeach; ?>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($benchmark['rows'] as $row): ?>
+                <?php foreach($set->benchmarks as $name => $benchmark): ?>
                     <tr>
-                        <td><b><?php echo $row['title']; ?></b>
-                            <small> - <a href="#" data-toggle="modal" data-target="#modal-<?php echo $row['name']; ?>"> <i class="icon-code"></i> Code</a></small>
-                            <?php modal($row, $benchmark['iterations']); ?>
+                        <td><b><?php echo $group->funcTitles[$benchmark->name]; ?></b>
+                            <small> - <a href="#" data-toggle="modal" data-target="#modal-<?php echo spl_object_hash($benchmark); ?>"> <i class="icon-code"></i> Code</a></small>
+                            <?php modal($benchmark); ?>
                         </td>
-                        <td><?php echo scientific($row['time']); ?> s</td>
-                        <td><?php echo scientific($row['avg']); ?> s</td>
-                        <?php foreach($row['comparisons'] as $comparisonData): ?>
+                        <td><?php echo scientific($benchmark->time); ?> s</td>
+                        <td><?php echo scientific($benchmark->getAverage()); ?> s</td>
+                        <?php foreach($benchmark->getComparisons() as $comparison): ?>
                             <td class="
                                 <?php
-                                    if ($comparisonData['ratio'] > 1) echo "text-danger";
-                                    elseif ($comparisonData['ratio'] < 1) echo "text-success";
+                                    if ($comparison->ratio() > 1) echo "text-danger";
+                                    elseif ($comparison->ratio() < 1) echo "text-success";
                                 ?>">
-                                <b><?php echo number_format($comparisonData['ratio'], 3); ?>&times;</b>
-                                (<?php echo $comparisonData['percentIncrease'] >= 0 ? '+' : '', number_format($comparisonData['percentIncrease'], 3); ?>%)
+                                <b><?php echo number_format($comparison->ratio(), 3); ?>&times;</b>
+                                (<?php echo $comparison->percentualIncrease() >= 0 ? '+' : '', number_format($comparison->percentualIncrease(), 3); ?>%)
                             </td>
                         <?php endforeach; ?>
                     </tr>
@@ -74,6 +79,17 @@
             </tfoot>
         </table>
     <?php endforeach; ?>
+
+    <?php if ($orders = $group->ordersOfGrowth()): ?>
+
+        <i class="pull-left">Empyrical orders of growth:</i><ul class="list-inline">
+        <?php foreach ($orders as $name => $order): ?><li>
+              <b><?php echo $group->funcTitles[$name]; ?></b>:
+              ~10<sup><?php echo number_format($order, 2); ?></sup>
+        </li><?php endforeach; ?>
+    </ul>
+    <?php endif; ?>
+<?php endforeach; ?>
 </div>
 <!-- Modal -->
 <script type="text/javascript">
@@ -93,25 +109,26 @@ function scientific($number, $precision = 2)
 
     return sprintf("%s &times; 10<sup>%s</sup>", $main, $exp);
 }
-function modal($row, $iterations)
+function modal(\Nicmart\Benchmark\BenchmarkResult $benchmark)
 {
 ?>
-    <div class="modal fade" id="modal-<?php echo $row['name']; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal-<?php echo spl_object_hash($benchmark); ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title"><?php echo $row['title']; ?></h4>
+            <h4 class="modal-title"><?php echo $benchmark->getTitle(); ?></h4>
           </div>
           <div class="modal-body">
 <pre class="brush: php">
-<?php echo $row['code']; ?>
+<?php echo $benchmark->getCode(); ?>
 </pre>
           </div>
             <div class="modal-footer small">
                 <ul class="list-inline" style="margin: 0; padding: 0">
-                    <li>Iterations: <b><?php echo number_format($iterations); ?></b></li>
-                    <li>Average Time: <b><?php echo $row['avg']; ?> s</b></li>
+                    <?php if ($benchmark->getInputSize()): ?><li>Input Size: <b><?php echo $benchmark->getInputSize(); ?></b></li><?php endif; ?>
+                    <li>Iterations: <b><?php echo number_format($benchmark->getIterations()); ?></b></li>
+                    <li>Average Time: <b><?php echo scientific($benchmark->getAverage()); ?> s</b></li>
                 </ul>
             </div>
         </div><!-- /.modal-content -->

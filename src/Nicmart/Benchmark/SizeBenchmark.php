@@ -9,36 +9,38 @@
  */
 
 namespace Nicmart\Benchmark;
-use Jeremeamia\SuperClosure\ClosureParser;
 
 /**
  * Class Benchmark
  */
-class Benchmark extends AbstractBenchmark
+class SizeBenchmark extends AbstractBenchmark
 {
-    private $functions = array();
+    private $functionals = array();
 
     /**
      * @param $name
      * @param $title
-     * @param $func
+     * @param $functional
      * @param bool $compare
      * @return $this
      */
-    public function register($name, $title, $func, $compare = false)
+    public function registerFunctional($name, $title, $functional, $compare = false)
     {
-        $this->resultsGroup->funcs[$name]
-            = $this->functions[$name] = $func;
+        $this->functionals[$name] = $functional;
         $this->resultsGroup->funcTitles[$name] = $title;
 
         if ($compare)
             $this->resultsGroup->compareWith[] = $name;
+
+        $this->resultsGroup->funcs[$name] = $functional(1);
 
         return $this;
     }
 
     protected function getSamplersForInputSize($inputSize)
     {
-        return $this->functions;
+        return array_map(function($functional) use($inputSize) {
+            return $functional($inputSize);
+        }, $this->functionals);
     }
 }
