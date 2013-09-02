@@ -1,7 +1,7 @@
-# Benchmark
-[![Build Status](https://travis-ci.org/nicmart/Benchmark.png?branch=master)](https://travis-ci.org/nicmart/Benchmark)
-[![Coverage Status](https://coveralls.io/repos/nicmart/Benchmark/badge.png?branch=master)](https://coveralls.io/r/nicmart/Benchmark?branch=master)
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/nicmart/Benchmark/badges/quality-score.png?s=0d038caab3aaf002666f805ff4c1b0638f377db5)](https://scrutinizer-ci.com/g/nicmart/Benchmark/)
+# FixedSizeEngine
+[![Build Status](https://travis-ci.org/nicmart/FixedSizeEngine.png?branch=master)](https://travis-ci.org/nicmart/FixedSizeEngine)
+[![Coverage Status](https://coveralls.io/repos/nicmart/FixedSizeEngine/badge.png?branch=master)](https://coveralls.io/r/nicmart/FixedSizeEngine?branch=master)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/nicmart/FixedSizeEngine/badges/quality-score.png?s=0d038caab3aaf002666f805ff4c1b0638f377db5)](https://scrutinizer-ci.com/g/nicmart/FixedSizeEngine/)
 
 A framework for benchmarking php code.
 
@@ -9,7 +9,7 @@ In early stage of development. Stay tuned.
 
 ## Install
 
-The best way to install Benchmark is [through composer](http://getcomposer.org).
+The best way to install FixedSizeEngine is [through composer](http://getcomposer.org).
 
 Just create a composer.json file for your project:
 

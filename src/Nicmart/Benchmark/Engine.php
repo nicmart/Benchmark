@@ -11,13 +11,16 @@
 namespace Nicmart\Benchmark;
 
 /**
- * Class Benchmark
+ * Class Engine
  */
-abstract class AbstractBenchmark
+abstract class Engine
 {
     /** @var BenchmarkResultsGroup */
     protected $resultsGroup;
 
+    /**
+     * @var callable[]
+     */
     protected $iterationCorrections = array();
 
     /**
@@ -28,8 +31,30 @@ abstract class AbstractBenchmark
         $this->resultsGroup = new BenchmarkResultsGroup($title);
     }
 
+    /**
+     * This will return a set of callables for the given input size.
+     *
+     * @param int|null $inputSize
+     * @return callable[]
+     */
     abstract protected function getSamplersForInputSize($inputSize);
 
+    /**
+     * @return BenchmarkResultsGroup
+     */
+    public function getResults()
+    {
+        return $this->resultsGroup;
+    }
+
+    /**
+     * Perform a set of benchmarks.
+     *
+     * @param int $iterations       The number of iterations. Cam be corrected by $iterationCorrections
+     * @param int|null $inputSize   The size of the input. Null for unspecified size.
+     *
+     * @return $this
+     */
     public function benchmark($iterations = 10000, $inputSize = null)
     {
         $set = new BenchmarkResultsSet($iterations, $inputSize);
@@ -37,17 +62,30 @@ abstract class AbstractBenchmark
 
         foreach ($this->getSamplersForInputSize($inputSize) as $name => $func) {
             $actualIterations = $this->getActualIterations($name, $iterations, $inputSize);
+
             $start = microtime(true);
             for ($i = 0; $i < $actualIterations; $i++)
                 $func();
-
             $time = microtime(true) - $start;
-            $set->addBenchmark(new BenchmarkResult($name, $time, $actualIterations));
+
+            $set->addBenchmark(new Benchmark($name, $time, $actualIterations));
         }
 
         return $this;
     }
 
+    /**
+     * The aim of this function is to perform a multiple set of benchmarks with different iterations and
+     * input sizes, but trying to keep the same execution time for each set.
+     *
+     * For each iteration input size is multiplied by $base and $iterations are devided by $base
+     * (in respect of the previous benchmark)
+     *
+     * @param int $startIterations  This is intended as the number of iterations of a linear-time algorithm
+     * @param int $startSize        The input size to start with
+     * @param int $numOfBenchmarks  The total number of benchmarks to launch.
+     * @param int $base             The base to multiply $startSize with
+     */
     public function progression($startIterations, $startSize, $numOfBenchmarks = 4, $base = 2)
     {
         $factor = 1;
@@ -57,7 +95,13 @@ abstract class AbstractBenchmark
         }
     }
 
-    public function getActualIterations($name, $iterations, $inputSize)
+    /**
+     * @param string $name          The name of the function
+     * @param int $iterations       The iteration number
+     * @param int|null $inputSize   The input size
+     * @return mixed
+     */
+    private function getActualIterations($name, $iterations, $inputSize)
     {
         if (!isset($this->iterationCorrections[$name]) || !isset($inputSize) || $this->iterationCorrections[$name] === 1)
             return $iterations;
@@ -71,18 +115,5 @@ abstract class AbstractBenchmark
         }
 
         return max(1, (int) ($inputSize / $correction($inputSize) * $iterations));
-    }
-
-    public function getResults()
-    {
-        return $this->resultsGroup;
-    }
-
-    public function flush()
-    {
-        $results = $this->getResults();
-        $this->resultsGroup = new BenchmarkResultsGroup($this->resultsGroup->title);
-
-        return $results;
     }
 }

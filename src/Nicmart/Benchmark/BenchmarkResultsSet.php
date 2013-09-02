@@ -19,7 +19,7 @@ namespace Nicmart\Benchmark;
  */
 class BenchmarkResultsSet
 {
-    /** @var BenchmarkResult[]  */
+    /** @var Benchmark[]  */
     public $benchmarks = array();
     public $iterations;
     public $inputSize;
@@ -33,7 +33,7 @@ class BenchmarkResultsSet
         $this->inputSize = $inputSize;
     }
 
-    public function addBenchmark(BenchmarkResult $benchmark)
+    public function addBenchmark(Benchmark $benchmark)
     {
         $this->benchmarks[$benchmark->name] = $benchmark;
         $benchmark->set = $this;

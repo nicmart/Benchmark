@@ -9,10 +9,10 @@
  */
 namespace Nicmart\Benchmark\Test;
 
-use Nicmart\Benchmark\Benchmark;
+use Nicmart\Benchmark\FixedSizeEngine;
 
 /**
- * Unit tests for class Benchmark
+ * Unit tests for class FixedSizeEngine
  */
 class BenchmarkTest extends \PHPUnit_Framework_TestCase
 {

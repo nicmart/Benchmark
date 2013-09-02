@@ -1,44 +1,91 @@
 <?php
-/*
- * This file is part of Benchmark.
- *
- * (c) 2013 Nicolò Martini
+/**
+ * This file is part of Benchmark
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @author Nicolò Martini <nicmartnic@gmail.com>
  */
 
 namespace Nicmart\Benchmark;
-use Jeremeamia\SuperClosure\ClosureParser;
 
-/**
- * Class Benchmark
- */
-class Benchmark extends AbstractBenchmark
+class Benchmark
 {
-    private $functions = array();
+    public $name;
+    public $time;
+    public $iterations;
+
+    /** @var  BenchmarkResultsSet */
+    public $set;
 
     /**
-     * @param $name
-     * @param $title
-     * @param $func
-     * @param bool $compare
-     * @return $this
+     * @param string $name        The name of the benchmark
+     * @param float $time         The time
+     * @param int $iterations     The number of iterations done
      */
-    public function register($name, $title, $func, $compare = false)
+    public function __construct($name, $time, $iterations)
     {
-        $this->resultsGroup->funcs[$name]
-            = $this->functions[$name] = $func;
-        $this->resultsGroup->funcTitles[$name] = $title;
-
-        if ($compare)
-            $this->resultsGroup->compareWith[] = $name;
-
-        return $this;
+        $this->name = $name;
+        $this->time = $time;
+        $this->iterations = $iterations;
     }
 
-    protected function getSamplersForInputSize($inputSize)
+    /**
+     * Get the average execution time
+     *
+     * @return float
+     */
+    public function getAverage()
     {
-        return $this->functions;
+        return $this->time / $this->iterations;
+    }
+
+    /**
+     * Get an array of comparisons with
+     * @return Comparison[]
+     */
+    public function getComparisons()
+    {
+        $comparisons = array();
+
+        foreach ($this->set->group->compareWith as $name) {
+            $benchmark = $this->set->benchmarks[$name];
+            $comparisons[$name] = new Comparison(
+                $this->getAverage(), $benchmark->getAverage()
+            );
+        }
+
+        return $comparisons;
+    }
+
+    /**
+     * Get the title of the benchmark, picking it from the parent group
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->set->group->funcTitles[$this->name];
+    }
+
+    /**
+     * Get the code of the sampling function
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->set->group->getCode($this->name);
+    }
+
+    /**
+     * Get the input size
+     *
+     * @return null|int
+     */
+    public function getInputSize()
+    {
+        return $this->set->inputSize;
     }
 }

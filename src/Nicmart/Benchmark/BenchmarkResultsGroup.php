@@ -56,6 +56,9 @@ class BenchmarkResultsGroup
             $bench1 = $this->sets[$i]->benchmarks[$name];
             $bench2 = $this->sets[$i-1]->benchmarks[$name];
 
+            if (null == $bench1->getInputSize() || null ===  $bench2->getInputSize())
+                continue;
+
             if ($bench1->getInputSize() / $bench2->getInputSize() > 1.1)
                 $ratios[] = log(
                     $bench1->getAverage() / $bench2->getAverage(),
@@ -74,7 +77,9 @@ class BenchmarkResultsGroup
         $orders = array();
 
         if (count($this->sets) > 1) foreach ($this->funcs as $name => $func) {
-            $orders[$name] = $this->orderOfGrowth($name);
+            $order = $this->orderOfGrowth($name);
+            if ($order !== null)
+                $orders[$name] = $order;
         }
 
         return $orders;

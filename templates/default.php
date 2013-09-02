@@ -73,7 +73,7 @@
                             <?php modal($benchmark); ?>
                         </td>
                         <td>
-                            <?php echo $benchmark->iterations; ?>
+                            <?php echo scientific($benchmark->iterations); ?>
                             <?php if($set->iterations != $benchmark->iterations):?>
                                 <i class="icon-question-sign" data-toggle="tooltip" data-placement="right"
                                     title="Actual iterations = iterations / (input size)^(correctionExp - 1)"></i>
@@ -120,17 +120,23 @@
 </body>
 </html>
 <?php
-function scientific($number, $precision = 2)
+function scientific($number, $precision = 3)
 {
-    if ($number >= 0.0001)
-        return number_format($number, 4 + $precision);
+    if ($number >= 0.0001 && $number < 10000) {
+        $log = log10($number);
+        $firstDigitPos = $log < 0 ? (int) $log - 1 : (int) $log;
+        $digitsAfterComma = $firstDigitPos < 0 ? -$firstDigitPos + $precision : 0;
+        return rtrim(number_format($number, $digitsAfterComma), "0");
+    }
 
     $s = sprintf("%.{$precision}e", $number);
     list($main, $exp) = explode('e', $s);
+    if ($exp[0] == '+')
+        $exp = substr($exp, 1);
 
     return sprintf("%s &times; 10<sup>%s</sup>", $main, $exp);
 }
-function modal(\Nicmart\Benchmark\BenchmarkResult $benchmark)
+function modal(\Nicmart\Benchmark\Benchmark $benchmark)
 {
 ?>
     <div class="modal fade" id="modal-<?php echo spl_object_hash($benchmark); ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

@@ -11,11 +11,7 @@
 include '../vendor/autoload.php';
 ini_set('xdebug.var_display_max_depth', '10');
 
-function func() {}
-
-$func = 'func';
-
-$bench = new \Nicmart\Benchmark\SizeBenchmark;
+$bench = new \Nicmart\Benchmark\VariabeSizeEngine;
 $args = array_fill(0, 5, null);;
 
 $bench
@@ -34,27 +30,27 @@ $bench->benchmark(1000, 128);
 $bench->benchmark(1000, 256);
 
 //var_dump($bench->getResults());
-$groups = array($bench->flush());
+$groups = array($bench->getResults());
 
-$bench = new \Nicmart\Benchmark\SizeBenchmark('Cycles');
+$bench = new \Nicmart\Benchmark\VariabeSizeEngine('Cycles');
 $bench
-    ->registerFunctional('logarithmic', 'Logarithmic loop', function($n) {
+    ->registerFunctional('logarithmic', 'Logarithmic', function($n) {
         return function() use ($n) {
             for ($i = 1; $i <= $n; $i *= 2) {}
         };
-    }, true, function ($n) { return log($n, 2); } )
-    ->registerFunctional('linear', 'Linear loop', function($n) {
+    }, false, function ($n) { return log($n, 2) * 3; } )
+    ->registerFunctional('linear', 'Linear', function($n) {
         return function() use ($n) {
             for ($i = 0; $i < $n; $i++) {}
         };
     }, true)
-    ->registerFunctional('square', 'Square loop', function($n) {
+    ->registerFunctional('square', 'Square', function($n) {
         return function() use ($n) {
             for ($i = 0; $i < $n; $i++)
                 for ($j = 0; $j < $n; $j++) {}
         };
     }, true, 2)
-    ->registerFunctional('cubic', 'Cubic loop', function($n) {
+    ->registerFunctional('cubic', 'Cubic', function($n) {
         return function() use ($n) {
             for ($i = 0; $i < $n; $i++)
                 for ($j = 0; $j < $n; $j++)
@@ -65,7 +61,7 @@ $bench
 
 $bench->progression(50000, 16, 4);
 
-$groups[] = $bench->flush();
+$groups[] = $bench->getResults();
 
 $template = new \Nicmart\Benchmark\PHPTemplate;
 echo $template->render(array('groups' => $groups));

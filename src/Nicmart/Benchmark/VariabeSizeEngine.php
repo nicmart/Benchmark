@@ -11,18 +11,19 @@
 namespace Nicmart\Benchmark;
 
 /**
- * Class Benchmark
+ * Class VariableSizeEngine
  */
-class SizeBenchmark extends AbstractBenchmark
+class VariabeSizeEngine extends Engine
 {
     private $functionals = array();
 
     /**
-     * @param $name
-     * @param $title
-     * @param $functional
-     * @param bool $compare
-     * @param int|callable $iterationCorrection
+     * @param string $name                          The name of the sampling function
+     * @param string $title                         The title of the sampling function
+     * @param callable $functional                  A functional that returns other functions
+     * @param bool $compare                         Include the sampling functions in comparisons?
+     * @param int|callable $iterationCorrection     Correcting function
+     *
      * @return $this
      */
     public function registerFunctional($name, $title, $functional, $compare = false, $iterationCorrection = 1)
@@ -40,6 +41,9 @@ class SizeBenchmark extends AbstractBenchmark
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function getSamplersForInputSize($inputSize)
     {
         return array_map(function($functional) use($inputSize) {
