@@ -36,7 +36,7 @@ $bench->benchmark(1000, 256);
 //var_dump($bench->getResults());
 $groups = array($bench->flush());
 
-$bench = new \Nicmart\Benchmark\SizeBenchmark;
+$bench = new \Nicmart\Benchmark\SizeBenchmark('Cycles');
 $bench
     ->registerFunctional('linear', 'Linear loop', function($n) {
         return function() use ($n) {
@@ -48,20 +48,27 @@ $bench
             for ($i = 0; $i < $n; $i++)
                 for ($j = 0; $j < $n; $j++) {}
         };
-    }, true, 0.5)
+    }, true, 2)
     ->registerFunctional('cubic', 'Cubic loop', function($n) {
         return function() use ($n) {
             for ($i = 0; $i < $n; $i++)
                 for ($j = 0; $j < $n; $j++)
                     for ($h = 0; $h < $n; $h++) {}
         };
-    }, true, 0.333)
+    }, true, 3)
 ;
 
 //$bench->benchmark(100000, 32);
-$bench->benchmark(1000, 64);
-$bench->benchmark(1000, 128);
-$bench->benchmark(1000, 256);
+#$bench->benchmark(10000, 20);
+#$bench->benchmark(10000, 40);
+$bench->benchmark(100000, 80);
+$bench->benchmark(10000, 160);
+$bench->benchmark(10000, 320);
+//$bench->benchmark(100000 / 2, 4);
+//$bench->benchmark(100000, 8);
+//$bench->benchmark(10000, 4);
+//$bench->benchmark(1000, 16);
+//$bench->benchmark(10000, 32);
 #$bench->benchmark(10000, 256);
 //$bench->benchmark(1, 4 * 1024);
 

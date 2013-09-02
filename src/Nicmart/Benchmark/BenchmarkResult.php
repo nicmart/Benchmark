@@ -54,7 +54,7 @@ class BenchmarkResult
 
     public function getIterations()
     {
-        return (int) pow($this->set->iterations, $this->set->group->iterationsCorrections[$this->name]);
+        return max(1, (int) ($this->set->iterations / pow($this->set->inputSize, $this->set->group->iterationsCorrections[$this->name] - 1)));
     }
 
     public function getInputSize()

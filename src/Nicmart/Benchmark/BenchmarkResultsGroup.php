@@ -51,6 +51,7 @@ class BenchmarkResultsGroup
     public function orderOfGrowth($name)
     {
         $ratios = array();
+
         for ($i = 1; $i < count($this->sets); $i++) {
             $bench1 = $this->sets[$i]->benchmarks[$name];
             $bench2 = $this->sets[$i-1]->benchmarks[$name];
@@ -62,6 +63,9 @@ class BenchmarkResultsGroup
                 );
         }
 
+        if (!$ratios)
+            return null;
+
         return array_sum($ratios) / count($ratios);
     }
 
@@ -69,7 +73,7 @@ class BenchmarkResultsGroup
     {
         $orders = array();
 
-        foreach ($this->funcs as $name => $func) {
+        if (count($this->sets) > 1) foreach ($this->funcs as $name => $func) {
             $orders[$name] = $this->orderOfGrowth($name);
         }
 
