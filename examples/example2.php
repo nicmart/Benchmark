@@ -38,6 +38,11 @@ $groups = array($bench->flush());
 
 $bench = new \Nicmart\Benchmark\SizeBenchmark('Cycles');
 $bench
+    ->registerFunctional('logarithmic', 'Logarithmic loop', function($n) {
+        return function() use ($n) {
+            for ($i = 1; $i <= $n; $i *= 2) {}
+        };
+    }, true, function ($n) { return log($n, 2); } )
     ->registerFunctional('linear', 'Linear loop', function($n) {
         return function() use ($n) {
             for ($i = 0; $i < $n; $i++) {}
@@ -58,19 +63,7 @@ $bench
     }, true, 3)
 ;
 
-//$bench->benchmark(100000, 32);
-#$bench->benchmark(10000, 20);
-#$bench->benchmark(10000, 40);
-$bench->benchmark(100000, 80);
-$bench->benchmark(10000, 160);
-$bench->benchmark(10000, 320);
-//$bench->benchmark(100000 / 2, 4);
-//$bench->benchmark(100000, 8);
-//$bench->benchmark(10000, 4);
-//$bench->benchmark(1000, 16);
-//$bench->benchmark(10000, 32);
-#$bench->benchmark(10000, 256);
-//$bench->benchmark(1, 4 * 1024);
+$bench->progression(50000, 16, 4);
 
 $groups[] = $bench->flush();
 

@@ -64,15 +64,17 @@
                 <?php foreach($set->benchmarks as $name => $benchmark): ?>
                     <tr>
                         <td><b><?php echo $group->funcTitles[$benchmark->name]; ?></b>
-                            <?php if(isset($group->iterationsCorrections[$name]) && $group->iterationsCorrections[$name] != 1):?>
-                                <sup><a href="#" data-toggle="tooltip" title="Iteration correction exponent"><?php echo $group->iterationsCorrections[$name]; ?></a></sup>
+                            <?php if($set->iterations != $benchmark->iterations):?>
+                                <sup><a href="#" data-toggle="tooltip" title="Iteration correction exponent">
+                                    <?php echo is_callable($group->iterationsCorrections[$name]) ? 'custom' : $group->iterationsCorrections[$name]; ?></a>
+                                </sup>
                             <?php endif; ?>
                             <small> - <a href="#" data-toggle="modal" data-target="#modal-<?php echo spl_object_hash($benchmark); ?>"> <i class="icon-code"></i> Code</a></small>
                             <?php modal($benchmark); ?>
                         </td>
                         <td>
-                            <?php echo $benchmark->getIterations(); ?>
-                            <?php if(isset($group->iterationsCorrections[$name]) && $group->iterationsCorrections[$name] != 1):?>
+                            <?php echo $benchmark->iterations; ?>
+                            <?php if($set->iterations != $benchmark->iterations):?>
                                 <i class="icon-question-sign" data-toggle="tooltip" data-placement="right"
                                     title="Actual iterations = iterations / (input size)^(correctionExp - 1)"></i>
                             <?php endif; ?>
@@ -146,7 +148,7 @@ function modal(\Nicmart\Benchmark\BenchmarkResult $benchmark)
             <div class="modal-footer small">
                 <ul class="list-inline" style="margin: 0; padding: 0">
                     <?php if ($benchmark->getInputSize()): ?><li>Input Size: <b><?php echo $benchmark->getInputSize(); ?></b></li><?php endif; ?>
-                    <li>Iterations: <b><?php echo number_format($benchmark->getIterations()); ?></b></li>
+                    <li>Iterations: <b><?php echo number_format($benchmark->iterations); ?></b></li>
                     <li>Average Time: <b><?php echo scientific($benchmark->getAverage()); ?> s</b></li>
                 </ul>
             </div>

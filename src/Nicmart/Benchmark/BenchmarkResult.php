@@ -14,19 +14,21 @@ class BenchmarkResult
 {
     public $name;
     public $time;
+    public $iterations;
 
     /** @var  BenchmarkResultsSet */
     public $set;
 
-    public function __construct($name, $time)
+    public function __construct($name, $time, $iterations)
     {
         $this->name = $name;
         $this->time = $time;
+        $this->iterations = $iterations;
     }
 
     public function getAverage()
     {
-        return $this->time / $this->getIterations();
+        return $this->time / $this->iterations;
     }
 
     public function getComparisons()
@@ -50,11 +52,6 @@ class BenchmarkResult
     public function getCode()
     {
         return $this->set->group->getCode($this->name);
-    }
-
-    public function getIterations()
-    {
-        return max(1, (int) ($this->set->iterations / pow($this->set->inputSize, $this->set->group->iterationsCorrections[$this->name] - 1)));
     }
 
     public function getInputSize()

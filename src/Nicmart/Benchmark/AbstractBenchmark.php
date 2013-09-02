@@ -42,18 +42,35 @@ abstract class AbstractBenchmark
                 $func();
 
             $time = microtime(true) - $start;
-            $set->addBenchmark(new BenchmarkResult($name, $time));
+            $set->addBenchmark(new BenchmarkResult($name, $time, $actualIterations));
         }
 
         return $this;
     }
 
+    public function progression($startIterations, $startSize, $numOfBenchmarks = 4, $base = 2)
+    {
+        $factor = 1;
+        for ($i = 1; $i <= $numOfBenchmarks; $i++) {
+            $this->benchmark((int) ($startIterations / $factor), $startSize * $factor);
+            $factor *= $base;
+        }
+    }
+
     public function getActualIterations($name, $iterations, $inputSize)
     {
-        if (!isset($this->iterationCorrections[$name]) || !isset($inputSize) || $this->iterationCorrections[$name] == 1)
+        if (!isset($this->iterationCorrections[$name]) || !isset($inputSize) || $this->iterationCorrections[$name] === 1)
             return $iterations;
 
-        return max(1, (int) ($iterations / pow($inputSize, $this->iterationCorrections[$name] - 1)));
+        $correction = $this->iterationCorrections[$name];
+
+        if (!is_callable($correction)) {
+            $correction = function ($n) use ($correction) {
+                return pow($n, $correction);
+            };
+        }
+
+        return max(1, (int) ($inputSize / $correction($inputSize) * $iterations));
     }
 
     public function getResults()

@@ -22,6 +22,7 @@ class SizeBenchmark extends AbstractBenchmark
      * @param $title
      * @param $functional
      * @param bool $compare
+     * @param int|callable $iterationCorrection
      * @return $this
      */
     public function registerFunctional($name, $title, $functional, $compare = false, $iterationCorrection = 1)
