@@ -18,6 +18,8 @@ abstract class AbstractBenchmark
     /** @var BenchmarkResultsGroup */
     protected $resultsGroup;
 
+    protected $iterationCorrections = array();
+
     /**
      * @param string $title
      */
@@ -34,8 +36,9 @@ abstract class AbstractBenchmark
         $this->resultsGroup->addSet($set);
 
         foreach ($this->getSamplersForInputSize($inputSize) as $name => $func) {
+            $actualIterations = $this->getActualIterations($name, $iterations);
             $start = microtime(true);
-            for ($i = 0; $i < $iterations; $i++)
+            for ($i = 0; $i < $actualIterations; $i++)
                 $func();
 
             $time = microtime(true) - $start;
@@ -43,6 +46,14 @@ abstract class AbstractBenchmark
         }
 
         return $this;
+    }
+
+    public function getActualIterations($name, $iterations)
+    {
+        if (!isset($this->iterationCorrections[$name]))
+            return $iterations;
+
+        return (int) pow($iterations, $this->iterationCorrections[$name]);
     }
 
     public function getResults()

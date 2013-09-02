@@ -24,7 +24,7 @@ class SizeBenchmark extends AbstractBenchmark
      * @param bool $compare
      * @return $this
      */
-    public function registerFunctional($name, $title, $functional, $compare = false)
+    public function registerFunctional($name, $title, $functional, $compare = false, $iterationCorrection = 1)
     {
         $this->functionals[$name] = $functional;
         $this->resultsGroup->funcTitles[$name] = $title;
@@ -33,6 +33,8 @@ class SizeBenchmark extends AbstractBenchmark
             $this->resultsGroup->compareWith[] = $name;
 
         $this->resultsGroup->funcs[$name] = $functional(1);
+        $this->iterationCorrections[$name] = $iterationCorrection;
+        $this->resultsGroup->iterationsCorrections[$name] = $iterationCorrection;
 
         return $this;
     }

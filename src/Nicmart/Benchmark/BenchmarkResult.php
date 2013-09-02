@@ -26,7 +26,7 @@ class BenchmarkResult
 
     public function getAverage()
     {
-        return $this->time / $this->set->iterations;
+        return $this->time / $this->getIterations();
     }
 
     public function getComparisons()
@@ -35,7 +35,7 @@ class BenchmarkResult
 
         foreach ($this->set->benchmarks as $name => $benchmark) {
             $comparisons[$name] = new Comparison(
-                $this->time, $benchmark->time
+                $this->getAverage(), $benchmark->getAverage()
             );
         }
 
@@ -54,7 +54,7 @@ class BenchmarkResult
 
     public function getIterations()
     {
-        return $this->set->iterations;
+        return (int) pow($this->set->iterations, $this->set->group->iterationsCorrections[$this->name]);
     }
 
     public function getInputSize()

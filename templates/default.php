@@ -40,12 +40,13 @@
     <?php foreach ($group->sets as $setIndex => $set): ?>
         <span class="btn btn-xs btn-info">
             Benchmark <?php echo $setIndex + 1; ?>: <b><?php echo number_format($set->iterations); ?></b> iterations,
-                <?php if ($set->inputSize): ?>size: <?php echo number_format($set->inputSize); ?><?php endif; ?>
+                <?php if ($set->inputSize): ?>size: <b><?php echo number_format($set->inputSize); ?></b><?php endif; ?>
         </span>
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Function</th>
+                    <th>Iterations</th>
                     <th>Time</th>
                     <th>Average</th>
                     <?php foreach ($group->compareWith as $name): ?>
@@ -59,6 +60,9 @@
                         <td><b><?php echo $group->funcTitles[$benchmark->name]; ?></b>
                             <small> - <a href="#" data-toggle="modal" data-target="#modal-<?php echo spl_object_hash($benchmark); ?>"> <i class="icon-code"></i> Code</a></small>
                             <?php modal($benchmark); ?>
+                        </td>
+                        <td>
+                            <?php echo $benchmark->getIterations(); ?>
                         </td>
                         <td><?php echo scientific($benchmark->time); ?> s</td>
                         <td><?php echo scientific($benchmark->getAverage()); ?> s</td>

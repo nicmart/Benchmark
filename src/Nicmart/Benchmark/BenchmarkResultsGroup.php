@@ -26,6 +26,7 @@ class BenchmarkResultsGroup
     public $compareWith = array();
     public $funcs = array();
     public $funcTitles = array();
+    public $iterationsCorrections = array();
 
     public function __construct($title)
     {
