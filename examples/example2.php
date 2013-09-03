@@ -59,7 +59,7 @@ $bench
     }, true, 3)
 ;
 
-$bench->progression(50000, 16, 4);
+$bench->progression(1000, 8, 4);
 
 $groups[] = $bench->getResults();
 

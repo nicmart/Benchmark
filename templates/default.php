@@ -70,25 +70,25 @@
                                 </sup>
                             <?php endif; ?>
                             <small> - <a href="#" data-toggle="modal" data-target="#modal-<?php echo spl_object_hash($benchmark); ?>"> <i class="icon-code"></i> Code</a></small>
-                            <?php modal($benchmark); ?>
+                            <?php echo $this->modal($benchmark); ?>
                         </td>
                         <td>
-                            <?php echo scientific($benchmark->iterations); ?>
+                            <?php echo $this->scientific($benchmark->iterations); ?>
                             <?php if($set->iterations != $benchmark->iterations):?>
                                 <i class="icon-question-sign" data-toggle="tooltip" data-placement="right"
                                     title="Actual iterations = iterations / (input size)^(correctionExp - 1)"></i>
                             <?php endif; ?>
                         </td>
-                        <td><?php echo scientific($benchmark->time); ?> s</td>
-                        <td><?php echo scientific($benchmark->getAverage()); ?> s</td>
+                        <td><?php echo $this->scientific($benchmark->time); ?> s</td>
+                        <td><?php echo $this->scientific($benchmark->getAverage()); ?> s</td>
                         <?php foreach($benchmark->getComparisons() as $comparison): ?>
                             <td class="
                                 <?php
                                     if ($comparison->ratio() > 1) echo "text-danger";
                                     elseif ($comparison->ratio() < 1) echo "text-success";
                                 ?>">
-                                <b><?php echo number_format($comparison->ratio(), 3); ?>&times;</b>
-                                (<?php echo $comparison->percentualIncrease() >= 0 ? '+' : '', number_format($comparison->percentualIncrease(), 3); ?>%)
+                                <b><?php echo $this->scientific($comparison->ratio()); ?>&times;</b>
+                                (<?php echo $comparison->percentualIncrease() > 0 ? '+' : '', $this->scientific($comparison->percentualIncrease(), 3); ?>%)
                             </td>
                         <?php endforeach; ?>
                     </tr>
@@ -119,47 +119,3 @@
 </script>
 </body>
 </html>
-<?php
-function scientific($number, $precision = 3)
-{
-    if ($number >= 0.0001 && $number < 10000) {
-        $log = log10($number);
-        $firstDigitPos = $log < 0 ? (int) $log - 1 : (int) $log;
-        $digitsAfterComma = $firstDigitPos < 0 ? -$firstDigitPos + $precision : 0;
-        return rtrim(number_format($number, $digitsAfterComma), "0");
-    }
-
-    $s = sprintf("%.{$precision}e", $number);
-    list($main, $exp) = explode('e', $s);
-    if ($exp[0] == '+')
-        $exp = substr($exp, 1);
-
-    return sprintf("%s &times; 10<sup>%s</sup>", $main, $exp);
-}
-function modal(\Nicmart\Benchmark\Benchmark $benchmark)
-{
-?>
-    <div class="modal fade" id="modal-<?php echo spl_object_hash($benchmark); ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title"><?php echo $benchmark->getTitle(); ?></h4>
-          </div>
-          <div class="modal-body">
-<pre class="brush: php">
-<?php echo $benchmark->getCode(); ?>
-</pre>
-          </div>
-            <div class="modal-footer small">
-                <ul class="list-inline" style="margin: 0; padding: 0">
-                    <?php if ($benchmark->getInputSize()): ?><li>Input Size: <b><?php echo $benchmark->getInputSize(); ?></b></li><?php endif; ?>
-                    <li>Iterations: <b><?php echo number_format($benchmark->iterations); ?></b></li>
-                    <li>Average Time: <b><?php echo scientific($benchmark->getAverage()); ?> s</b></li>
-                </ul>
-            </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-<?php
-}
