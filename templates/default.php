@@ -108,6 +108,15 @@
         </li><?php endforeach; ?>
     </ul>
     <?php endif; ?>
+
+    <?php $machineData = $group->getMachineData(); ?>
+    <ul class="list-inline">
+        <b>PHP version</b>: <?php echo $machineData->phpVersion(); ?>
+        <?php if($cachingData = $machineData->opcodeCacheData()): ?>
+            <b>Opcode Cache</b>: <?php echo $cachingData['title']; ?> v<?php echo $cachingData['version']; ?>
+        <?php endif; ?>
+    </ul>
+
 <?php endforeach; ?>
 </div>
 <!-- Modal -->

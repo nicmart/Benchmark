@@ -84,4 +84,9 @@ class BenchmarkResultsGroup
 
         return $orders;
     }
+
+    public function getMachineData()
+    {
+        return new MachineData;
+    }
 } 
