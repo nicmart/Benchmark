@@ -45,8 +45,8 @@
     <hr>
     <?php foreach ($group->sets as $setIndex => $set): ?>
         <span class="btn btn-xs btn-info">
-            Benchmark <?php echo $setIndex + 1; ?>: <b><?php echo number_format($set->iterations); ?></b> iterations,
-                <?php if ($set->inputSize): ?>size: <b><?php echo number_format($set->inputSize); ?></b><?php endif; ?>
+            Benchmark <?php echo $setIndex + 1; ?>: <b><?php echo $this->n($set->iterations)->format(); ?></b> iterations,
+                <?php if ($set->inputSize): ?>size: <b><?php echo $this->n($set->inputSize)->format(); ?></b><?php endif; ?>
         </span>
         <table class="table table-striped">
             <thead>
@@ -73,22 +73,24 @@
                             <?php echo $this->modal($benchmark); ?>
                         </td>
                         <td>
-                            <?php echo $this->scientific($benchmark->iterations); ?>
+                            <?php echo $this->n($benchmark->iterations)->getSuffixNotation(); ?>
                             <?php if($set->iterations != $benchmark->iterations):?>
                                 <i class="icon-question-sign" data-toggle="tooltip" data-placement="right"
                                     title="Actual iterations = iterations / (input size)^(correctionExp - 1)"></i>
                             <?php endif; ?>
                         </td>
-                        <td><?php echo $this->scientific($benchmark->time); ?> s</td>
-                        <td><?php echo $this->scientific($benchmark->getAverage()); ?> s</td>
+                        <td><?php echo $this->n($benchmark->time)->round(3)->getSciNotation(); ?> s</td>
+                        <td><?php echo $this->n($benchmark->getAverage())->round(3)->getSciNotation(); ?> s</td>
                         <?php foreach($benchmark->getComparisons() as $comparison): ?>
                             <td class="
                                 <?php
                                     if ($comparison->ratio() > 1) echo "text-danger";
                                     elseif ($comparison->ratio() < 1) echo "text-success";
                                 ?>">
-                                <b><?php echo $this->scientific($comparison->ratio()); ?>&times;</b>
-                                (<?php echo $comparison->percentualIncrease() > 0 ? '+' : '', $this->scientific($comparison->percentualIncrease(), 3); ?>%)
+                                <b><?php echo $this->n($comparison->ratio())->round(3)->format(); ?>&times;</b>
+                                (<?php echo $comparison->percentualIncrease() > 0 ? '+' : '',
+                                    $this->n($comparison->percentualIncrease())->round(3)->format()
+                                ?>%)
                             </td>
                         <?php endforeach; ?>
                     </tr>
@@ -104,7 +106,7 @@
         <i class="pull-left">Empyrical orders of growth:</i><ul class="list-inline">
         <?php foreach ($orders as $name => $order): ?><li>
               <b><?php echo $group->funcTitles[$name]; ?></b>:
-              ~10<sup><?php echo number_format($order, 2); ?></sup>
+              ~10<sup><?php echo $this->n($order)->round(2)->format(); ?></sup>
         </li><?php endforeach; ?>
     </ul>
     <?php endif; ?>

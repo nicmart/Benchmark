@@ -12,9 +12,9 @@
       </div>
         <div class="modal-footer small">
             <ul class="list-inline" style="margin: 0; padding: 0">
-                <?php if ($benchmark->getInputSize()): ?><li>Input Size: <b><?php echo $benchmark->getInputSize(); ?></b></li><?php endif; ?>
-                <li>Iterations: <b><?php echo number_format($benchmark->iterations); ?></b></li>
-                <li>Average Time: <b><?php echo $this->scientific($benchmark->getAverage()); ?> s</b></li>
+                <?php if ($benchmark->getInputSize()): ?><li>Input Size: <b><?php echo $this->n($benchmark->getInputSize())->format(); ?></b></li><?php endif; ?>
+                <li>Iterations: <b><?php echo $this->n($benchmark->iterations)->format(); ?></b></li>
+                <li>Average Time: <b><?php echo $this->n($benchmark->getAverage())->round(3)->getSciNotation(); ?> s</b></li>
             </ul>
         </div>
     </div><!-- /.modal-content -->
