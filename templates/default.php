@@ -120,6 +120,7 @@
         <?php if($cachingData = $machineData->opcodeCacheData()): ?>
             <b>Opcode Cache</b>: <?php echo $cachingData['title']; ?> v<?php echo $cachingData['version']; ?>
         <?php endif; ?>
+        <b>Max Memory Usage</b> <?php echo $this->n(memory_get_peak_usage())->round(2)->getSuffixNotation(); ?>B
     </ul>
 
 <?php endforeach; ?>
