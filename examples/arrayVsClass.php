@@ -31,6 +31,7 @@ class Test {
 
 $bench
     ->register('plain array', 'Plain Array', function() {
+        $a = array();
         $a["field0"] = 0;
         $a["field1"] = 1;
         $a["field2"] = 2;
