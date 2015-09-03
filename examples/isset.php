@@ -28,9 +28,12 @@ $bench
     ->register('is_null', 'is_null', function() use ($args) {
         $a = is_null($args[0]); $b = is_null($args[1]);
     })
+    ->register('array_key_exists', 'array_key_exists', function() use ($args) {
+        $a = array_key_exists(0, $args); $b = array_key_exists(1, $args);
+    })
 ;
 
-$bench->benchmark(10000);
+$bench->benchmark(50000);
 
 $groups[] = $bench->getResults();
 
